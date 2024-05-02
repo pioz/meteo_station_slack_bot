@@ -12,23 +12,15 @@ collection = mongo_client['measurements']
 logger = Logger.new(STDOUT)
 
 Handler = Proc.new do |request, response|
-  if request.body
-    puts request.body
-    logger.info request.body
-    request_body = JSON.parse(request.body)
-    case request_body['type']
-    when 'url_verification'
-      response.status = 200
-      response.body = request_body['challenge']
-      return
-    when 'event_callback'
-      data = collection.find.last
-      slack_client.chat_postMessage(channel: request_body['event']['channel'], text: "Data: #{data.to_json}", as_user: true)
-      response.status = 200
-      response.body = 'Event processed'
-      return
-    end
+  channel_id = request.query['channel_id']
+  command = request.query['command']
+  when 'meteo'
+    data = collection.find.last
+    slack_client.chat_postMessage(channel: channel_id, text: "Data: #{data.to_json}", as_user: true)
+    response.status = 200
+    response.body = 'Event processed'
+  else
+    response.status = 400
+    response.body = 'Bad request'
   end
-  response.status = 400
-  response.body = 'Bad request'
 end
