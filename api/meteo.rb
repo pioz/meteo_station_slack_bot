@@ -15,7 +15,7 @@ end
 
 
 Handler = Proc.new do |request, response|
-  if request.body.present?
+  if request.body
     request_body = JSON.parse(request.body.read)
     case request_body['type']
     when 'url_verification'
