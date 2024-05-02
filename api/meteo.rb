@@ -11,16 +11,22 @@ mongo_client = Mongo::Client.new(ENV['MONGO_URI'], { server_api: { version: '1' 
 collection = mongo_client['measurements']
 
 def handler(event:, context:)
-  request_data = JSON.parse(event[:body])
-  case request_data['type']
-  when 'url_verification'
-    { statusCode: 200, body: request_data['challenge'].to_json }
-  when 'event_callback'
-    data = collection.find.last
-    slack_client.chat_postMessage(channel: request_data['event']['channel'], text: "Dati: #{data.to_json}", as_user: true)
-    { statusCode: 200, body: 'Event processed'.to_json }
-  else
-    { statusCode: 400, body: 'Bad request'.to_json }
-  end
 end
 
+
+Handler = Proc.new do |request, response|
+  request_body = JSON.parse(request.body.read)
+  case request_body['type']
+  when 'url_verification'
+    response.status = 200
+    response.body = request_body['challenge']
+  when 'event_callback'
+    data = collection.find.last
+    slack_client.chat_postMessage(channel: request_body['event']['channel'], text: "Data: #{data.to_json}", as_user: true)
+    response.status = 200
+    response.body = 'Event processed'
+  else
+    response.status = 400
+    response.body = 'Bad request'
+  end
+end
