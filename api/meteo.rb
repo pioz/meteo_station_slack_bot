@@ -9,9 +9,12 @@ end
 slack_client = Slack::Web::Client.new
 mongo_client = Mongo::Client.new(ENV['MONGO_URI'], { server_api: { version: '1' } })
 collection = mongo_client['measurements']
+logger = Logger.new(STDOUT)
 
 Handler = Proc.new do |request, response|
   if request.body
+    puts request.body
+    logger.info request.body
     request_body = JSON.parse(request.body)
     case request_body['type']
     when 'url_verification'
