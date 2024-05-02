@@ -12,9 +12,7 @@ collection = mongo_client['measurements']
 
 Handler = Proc.new do |request, response|
   if request.body
-    puts request.body.class
-    puts request.body.inspect
-    request_body = JSON.parse(request.body.read)
+    request_body = JSON.parse(request.body)
     case request_body['type']
     when 'url_verification'
       response.status = 200
