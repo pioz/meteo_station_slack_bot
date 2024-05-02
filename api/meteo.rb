@@ -12,12 +12,12 @@ collection = mongo_client['measurements']
 logger = Logger.new(STDOUT)
 
 Handler = Proc.new do |request, response|
-  channel_id = request.query['channel_id']
+  user_id = request.query['user_id']
   command = request.query['command']
   case command
   when '/meteo'
     data = collection.find.sort({ _id: -1 }).first
-    slack_client.chat_postMessage(channel: channel_id, text: "Data: #{data.to_json}", as_user: true)
+    slack_client.chat_postMessage(channel: user_id, text: "Data: #{data.to_json}", as_user: true)
     response.status = 200
     response.body = 'Event processed'
   else
