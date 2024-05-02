@@ -14,6 +14,7 @@ logger = Logger.new(STDOUT)
 Handler = Proc.new do |request, response|
   channel_id = request.query['channel_id']
   command = request.query['command']
+  case command
   when 'meteo'
     data = collection.find.last
     slack_client.chat_postMessage(channel: channel_id, text: "Data: #{data.to_json}", as_user: true)
