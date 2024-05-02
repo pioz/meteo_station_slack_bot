@@ -16,7 +16,7 @@ Handler = Proc.new do |request, response|
   command = request.query['command']
   case command
   when '/meteo'
-    data = collection.find.last
+    data = collection.find.sort({ _id: -1 }).first
     slack_client.chat_postMessage(channel: channel_id, text: "Data: #{data.to_json}", as_user: true)
     response.status = 200
     response.body = 'Event processed'
