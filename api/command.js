@@ -1,9 +1,10 @@
-const { MongoClient } = require('mongodb')
+const { MongoClient, ServerApiVersion } = require('mongodb')
 
+debugger
 const client = new MongoClient(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  serverApi: MongoClient.ServerApiVersion.v1
+  serverApi: ServerApiVersion.v1
 })
 
 const collection = client.db().collection('measurements')
