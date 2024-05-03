@@ -1,6 +1,5 @@
 const { MongoClient, ServerApiVersion } = require('mongodb')
 
-debugger
 const client = new MongoClient(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -19,21 +18,21 @@ const infoBody = (temperature, humidity, ppm, createdAt) => (
 )
 
 module.exports = async (req, res) => {
+  console.log(req.query)
   const command = req.query.command
 
   switch (command) {
     case '/meteo':
       try {
         await client.connect()
-        const data = await collection.find().sort({ _id: -1 }).limit(1).toArray()
+        const lastMeasure = await collection.findOne({}, { sort: { _id: -1 } })
 
-        if (data.length > 0) {
-          const latestData = data[0]
+        if (lastMeasure) {
           const responseMessage = infoBody(
-            latestData.temperature,
-            latestData.humidity,
-            latestData.ppm,
-            latestData._created_at
+            lastMeasure.temperature,
+            lastMeasure.humidity,
+            lastMeasure.ppm,
+            lastMeasure._created_at
           )
           res.status(200).send(responseMessage)
         } else {
