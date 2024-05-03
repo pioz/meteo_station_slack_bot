@@ -18,7 +18,7 @@ const infoBody = (temperature, humidity, ppm, createdAt) => (
 )
 
 module.exports = async (req, res) => {
-  console.log(req.query)
+  console.log(req)
   const command = req.query.command
 
   switch (command) {
