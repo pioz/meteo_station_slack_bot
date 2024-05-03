@@ -13,7 +13,7 @@ const infoBody = (temperature, humidity, ppm, createdAt) => (
     `🌡️ Temperature: ${temperature.toFixed(2)}C`,
     `🚰 Humidity: ${humidity.toFixed(2)}%`,
     `🦠 PPM: ${ppm.toFixed(2)}ppm`,
-    `registered at ${createdAt.getHours()}:${createdAt.getMinutes()}`
+    `🕓 registered at ${createdAt.getHours()}:${createdAt.getMinutes()}`
   ].join('\n')
 )
 
