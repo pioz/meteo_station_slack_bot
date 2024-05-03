@@ -18,9 +18,9 @@ const infoBody = (temperature, humidity, ppm, createdAt) => (
 )
 
 module.exports = async (req, res) => {
-  console.log('PIOZ DEBUG OLD STYLE')
-  console.log(req)
-  console.log(req.query)
+  // console.log('PIOZ DEBUG OLD STYLE')
+  // console.log(req)
+  // console.log(req.query)
   console.log(req.body)
   const command = req.query.command
 
