@@ -18,13 +18,9 @@ const infoBody = (temperature, humidity, ppm, createdAt) => (
 )
 
 module.exports = async (req, res) => {
-  // console.log('PIOZ DEBUG OLD STYLE')
-  // console.log(req)
-  // console.log(req.query)
-  console.log(req.body)
-  const command = req.query.command
+  const params = req.body || req.query
 
-  switch (command) {
+  switch (params.command) {
     case '/meteo':
       try {
         await client.connect()
