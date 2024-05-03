@@ -1,13 +1,7 @@
 require 'mongo'
-# require 'slack-ruby-client'
+OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 
-# Slack.configure do |config|
-#   config.token = ENV['SLACK_BOT_TOKEN']
-# end
-
-# slack_client = Slack::Web::Client.new
 mongo_client = Mongo::Client.new(ENV['MONGO_URI'], { server_api: { version: '1' } })
-collection = mongo_client['measurements']
 
 def info_body(temperature, humidity, ppm, created_at)
   s = []
@@ -19,12 +13,11 @@ def info_body(temperature, humidity, ppm, created_at)
 end
 
 Handler = Proc.new do |request, response|
-  # user_id = request.query['user_id']
   command = request.query['command']
   case command
   when '/meteo'
+    collection = mongo_client['measurements']
     data = collection.find.sort({ _id: -1 }).first
-    # slack_client.chat_postMessage(channel: user_id, text: 'Hello from Vercel', as_user: true)
     response.status = 200
     response.body = info_body(data['temperature'], data['humidity'], data['ppm'], data['_created_at'])
   else
@@ -32,3 +25,9 @@ Handler = Proc.new do |request, response|
     response.body = 'Bad request'
   end
 end
+
+# require 'webrick'
+# require 'json'
+# server = WEBrick::HTTPServer.new(:Port => 3031, :DocumentRoot => '/')
+# server.mount_proc '/', Handler
+# server.start
